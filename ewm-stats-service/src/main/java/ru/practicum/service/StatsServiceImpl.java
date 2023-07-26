@@ -37,7 +37,6 @@ public class StatsServiceImpl implements StatsService {
                     viewStatsDtos.add(StatsMapper.INSTANCE.viewStatsToViewStatsDto(
                             statsRepository.getStatisticsByUri(uri, start, end)));
                 }
-//                viewStatsDtos.sort((o1, o2) -> Math.toIntExact(o1.getHits() - o2.getHits()));
                 viewStatsDtos.sort((o1, o2) -> o2.getHits().compareTo(o1.getHits()));
             }
         } else if (unique) {
