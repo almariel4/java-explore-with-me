@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
-import javax.validation.constraints.PastOrPresent;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +17,6 @@ public class EndpointHitDto {
     private String app;
     private String uri;
     private String ip;
-    @PastOrPresent
+
     private String timestamp;
 }

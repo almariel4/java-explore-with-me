@@ -19,22 +19,26 @@ public class StatsServiceImpl implements StatsService {
     private final StatsRepository statsRepository;
 
     @Override
-    public void saveEndpointHit(EndpointHitDto endpointHit) {
-        statsRepository.save(StatsMapper.INSTANCE.endpointHitDtoToEndpointHit(endpointHit));
+    public void saveEndpointHit(EndpointHitDto endpointHitDto) {
+        statsRepository.save(StatsMapper.INSTANCE.endpointHitDtoToEndpointHit(endpointHitDto));
     }
 
     @Override
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique) {
         List<ViewStatsDto> viewStatsDtos = new ArrayList<>();
-        if (uris.length > 0 && unique) {
-            for (String uri : uris) {
-                viewStatsDtos.add(StatsMapper.INSTANCE.viewStatsToViewStatsDto(
-                        statsRepository.getStatisticsByUriUniqueIp(uri, start, end)));
-            }
-        } else if (uris.length > 0) {
-            for (String uri : uris) {
-                viewStatsDtos.add(StatsMapper.INSTANCE.viewStatsToViewStatsDto(
-                        statsRepository.getStatisticsByUri(uri, start, end)));
+        if (uris != null) {
+            if (unique) {
+                for (String uri : uris) {
+                    viewStatsDtos.add(StatsMapper.INSTANCE.viewStatsToViewStatsDto(
+                            statsRepository.getStatisticsByUriUniqueIp(uri, start, end)));
+                }
+            } else if (uris.length > 0) {
+                for (String uri : uris) {
+                    viewStatsDtos.add(StatsMapper.INSTANCE.viewStatsToViewStatsDto(
+                            statsRepository.getStatisticsByUri(uri, start, end)));
+                }
+//                viewStatsDtos.sort((o1, o2) -> Math.toIntExact(o1.getHits() - o2.getHits()));
+                viewStatsDtos.sort((o1, o2) -> o2.getHits().compareTo(o1.getHits()));
             }
         } else if (unique) {
             viewStatsDtos = statsRepository.getAllStatisticsUnique(start, end).stream()

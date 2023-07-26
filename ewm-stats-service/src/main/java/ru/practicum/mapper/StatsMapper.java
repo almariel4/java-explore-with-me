@@ -1,6 +1,7 @@
 package ru.practicum.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 import ru.practicum.dto.EndpointHitDto;
@@ -14,10 +15,8 @@ public interface StatsMapper {
 
     StatsMapper INSTANCE = Mappers.getMapper(StatsMapper.class);
 
-    //    @Mapping(target = "id", source = "id")
     ViewStatsDto viewStatsToViewStatsDto(ViewStats viewStats);
 
-    ViewStats viewStatsDtoToViewStats(ViewStatsDto viewStatsDto);
-
+    @Mapping(target = "timestamp", source = "timestamp", dateFormat = "yyyy-MM-dd HH:mm:ss")
     EndpointHit endpointHitDtoToEndpointHit(EndpointHitDto endpointHitDto);
 }
