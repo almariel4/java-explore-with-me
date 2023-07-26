@@ -8,6 +8,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class BaseClient {
     protected final RestTemplate rest;
@@ -29,7 +30,7 @@ public class BaseClient {
     }
 
     private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path, @Nullable Map<String, Object> parameters, @Nullable T body) {
-        HttpEntity<T> requestEntity = new HttpEntity<>(body);
+        HttpEntity<T> requestEntity = new HttpEntity<>(Objects.requireNonNull(body));
 
         ResponseEntity<Object> ewmServerResponse;
         try {
