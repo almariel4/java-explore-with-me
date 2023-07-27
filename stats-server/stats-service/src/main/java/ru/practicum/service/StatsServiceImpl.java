@@ -1,9 +1,9 @@
 package ru.practicum.service;
 
+import dto.EndpointHitDto;
+import dto.ViewStatsDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.dto.EndpointHitDto;
-import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.mapper.StatsMapper;
 import ru.practicum.repository.StatsRepository;
 
@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 @AllArgsConstructor

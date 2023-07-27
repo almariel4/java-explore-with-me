@@ -1,10 +1,10 @@
 package ru.practicum.controller;
 
+import dto.EndpointHitDto;
+import dto.ViewStatsDto;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.EndpointHitDto;
-import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.service.StatsService;
 
 import java.time.LocalDateTime;

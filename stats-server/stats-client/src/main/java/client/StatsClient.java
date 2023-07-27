@@ -1,5 +1,6 @@
-package ru.practicum.client;
+package client;
 
+import dto.EndpointHitDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.dto.EndpointHitDto;
 
 import javax.validation.constraints.PastOrPresent;
 import java.util.Map;
