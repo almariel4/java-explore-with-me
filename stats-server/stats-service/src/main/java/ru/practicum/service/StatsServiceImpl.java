@@ -29,15 +29,13 @@ public class StatsServiceImpl implements StatsService {
         List<ViewStatsDto> viewStatsDtos = new ArrayList<>();
         if (uris != null) {
             if (unique) {
-                for (String uri : uris) {
-                    viewStatsDtos.add(StatsMapper.INSTANCE.viewStatsToViewStatsDto(
-                            statsRepository.getStatisticsByUriUniqueIp(uri, start, end)));
-                }
+                viewStatsDtos = statsRepository.getStatisticsByUriUniqueIp(start, end, uris).stream()
+                        .map(StatsMapper.INSTANCE::viewStatsToViewStatsDto)
+                        .collect(Collectors.toList());
             } else if (uris.length > 0) {
-                for (String uri : uris) {
-                    viewStatsDtos.add(StatsMapper.INSTANCE.viewStatsToViewStatsDto(
-                            statsRepository.getStatisticsByUri(uri, start, end)));
-                }
+                viewStatsDtos = statsRepository.getStatisticsByUri(start, end, uris).stream()
+                        .map(StatsMapper.INSTANCE::viewStatsToViewStatsDto)
+                        .collect(Collectors.toList());
                 viewStatsDtos.sort((o1, o2) -> o2.getHits().compareTo(o1.getHits()));
             }
         } else if (unique) {

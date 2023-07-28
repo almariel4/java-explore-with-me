@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class StatsController {
 
-    private StatsService statsService;
+    private final StatsService statsService;
 
     @PostMapping({"/hit"})
     public void saveEndpointHit(@RequestBody EndpointHitDto endpointHit) {
