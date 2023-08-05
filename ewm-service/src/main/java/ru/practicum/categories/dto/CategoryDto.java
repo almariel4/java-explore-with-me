@@ -1,4 +1,4 @@
-package dto;
+package ru.practicum.categories.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,11 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EndpointHitDto {
+public class CategoryDto {
 
     private Long id;
-    private String app;
-    private String uri;
-    private String ip;
-    private String timestamp;
+    private String name;        // Название категории
 }

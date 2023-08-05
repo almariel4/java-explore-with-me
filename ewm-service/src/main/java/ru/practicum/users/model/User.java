@@ -1,4 +1,4 @@
-package ru.practicum.model;
+package ru.practicum.users.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,25 +7,19 @@ import lombok.Setter;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
-import javax.validation.constraints.PastOrPresent;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "hits")
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EndpointHit {
+public class User {
 
     @Id
     @ReadOnlyProperty
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String app;
-    private String uri;
-    private String ip;
-    @PastOrPresent
-    private LocalDateTime timestamp;
-
+    private String email;
+    private String name;
 }
