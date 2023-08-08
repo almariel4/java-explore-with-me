@@ -34,17 +34,17 @@ public class BaseClient {
         HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders());
 
 
-        ResponseEntity<Object> shareitServerResponse;
+        ResponseEntity<Object> ewmServerResponse;
         try {
             if (parameters != null) {
-                shareitServerResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
+                ewmServerResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
             } else {
-                shareitServerResponse = rest.exchange(path, method, requestEntity, Object.class);
+                ewmServerResponse = rest.exchange(path, method, requestEntity, Object.class);
             }
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
         }
-        return prepareGatewayResponse(shareitServerResponse);
+        return prepareGatewayResponse(ewmServerResponse);
     }
 
 

@@ -4,6 +4,7 @@ import dto.EndpointHitDto;
 import dto.ViewStatsDto;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.service.StatsService;
 
@@ -20,6 +21,7 @@ public class StatsController {
     private final StatsService statsService;
 
     @PostMapping({"/hit"})
+    @ResponseStatus(HttpStatus.CREATED)
     public void saveEndpointHit(@RequestBody EndpointHitDto endpointHit) {
         statsService.saveEndpointHit(endpointHit);
     }
