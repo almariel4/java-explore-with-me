@@ -4,6 +4,7 @@ import dto.EndpointHitDto;
 import dto.ViewStatsDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.exception.StatsException;
 import ru.practicum.mapper.StatsMapper;
 import ru.practicum.repository.StatsRepository;
 
@@ -27,6 +28,9 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique) {
         List<ViewStatsDto> viewStatsDtos = new ArrayList<>();
+        if (start.isAfter(end)) {
+            throw new StatsException("Время начала поиска не может быть позже времени окончания.");
+        }
         if (uris != null) {
             if (unique) {
                 viewStatsDtos = statsRepository.getStatisticsByUriUniqueIp(start, end, uris).stream()
