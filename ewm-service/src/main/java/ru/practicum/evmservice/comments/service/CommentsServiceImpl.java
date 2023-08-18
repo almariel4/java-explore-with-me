@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.practicum.evmservice.comments.dto.CommentDto;
-import ru.practicum.evmservice.comments.dto.EventComments;
 import ru.practicum.evmservice.comments.mapper.CommentMapper;
 import ru.practicum.evmservice.comments.model.Comment;
 import ru.practicum.evmservice.comments.model.CommentStatus;
@@ -13,14 +12,14 @@ import ru.practicum.evmservice.events.model.Event;
 import ru.practicum.evmservice.events.repository.EventRepository;
 import ru.practicum.evmservice.exceptions.ApiError;
 import ru.practicum.evmservice.exceptions.ConditionsException;
+import ru.practicum.evmservice.exceptions.IncorrectRequestEcxeption;
 import ru.practicum.evmservice.exceptions.NotFoundException;
+import ru.practicum.evmservice.users.model.User;
 import ru.practicum.evmservice.users.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,7 +36,9 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Override
     public List<CommentDto> getAllCommentsByEvent(Long eventId) {
+        eventRepository.findById(eventId).orElseThrow(NotFoundException::new);
         return commentsRepository.getCommentsByEventId(eventId).stream()
+                .filter(comment -> comment.getCommentStatus().equals(CommentStatus.PUBLISH))
                 .map(CommentMapper.INSTANCE::commentToCommentDto)
                 .collect(Collectors.toList());
     }
@@ -50,42 +51,29 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public void deleteCommentByAdmin(Long commentId) {
-        Comment comment = commentsRepository.findById(commentId).orElseThrow(NotFoundException::new);
-        commentsRepository.delete(comment);
-    }
-
-    @Override
     public List<CommentDto> getAllUserCommentsByEvent(Long userId, Long eventId) {
         userRepository.findById(userId).orElseThrow(NotFoundException::new);
-        eventRepository.findById(eventId).orElseThrow(NotFoundException::new);
+        Event event = eventRepository.findById(eventId).orElseThrow(NotFoundException::new);
+        if (!userId.equals(event.getInitiator().getId())) {
+            throw new IncorrectRequestEcxeption(new ApiError(
+                    HttpStatus.CONFLICT.toString(), "Incorrectly made request.",
+                    "Пользователь не является инициатором события", LocalDateTime.now().format(formatter)));
+        }
         return commentsRepository.getAllUserCommentsByEvent(userId, eventId).stream()
                 .map(CommentMapper.INSTANCE::commentToCommentDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<EventComments> getAllUserCommentsByAllEvents(Long userId) {
-        List<EventComments> eventComments = new ArrayList<>();
-        userRepository.findById(userId).orElseThrow(NotFoundException::new);
-        Set<Long> eventsIds = commentsRepository.getAllEventsWithComments(userId).stream()
-                .map(Event::getId).collect(Collectors.toSet());
-        for (Long eventId : eventsIds) {
-            List<CommentDto> commentsDtos = commentsRepository.getCommentsByEventId(eventId).stream()
-                    .map(CommentMapper.INSTANCE::commentToCommentDto).collect(Collectors.toList());
-            eventComments.add(new EventComments(eventId, commentsDtos));
-        }
-        return eventComments;
-    }
-
-    @Override
     public CommentDto createCommentByUser(Long userId, CommentDto commentDto) {
-        userRepository.findById(userId).orElseThrow(NotFoundException::new);
-        commentDto.setCreated(LocalDateTime.parse(LocalDateTime.now().format(formatter)));
-        commentDto.setAuthor_id(userId);
+        User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
+        commentDto.setCreated(LocalDateTime.now());
+        Event event = eventRepository.findById(commentDto.getEventId()).orElseThrow(NotFoundException::new);
         commentDto.setCommentStatus(CommentStatus.PENDING);
-        return CommentMapper.INSTANCE.commentToCommentDto(commentsRepository.save(
-                CommentMapper.INSTANCE.commentDtoToComment(commentDto)));
+        Comment comment = CommentMapper.INSTANCE.commentDtoToComment(commentDto);
+        comment.setAuthor(user);
+        comment.setEvent(event);
+        return CommentMapper.INSTANCE.commentToCommentDto(commentsRepository.save(comment));
     }
 
     @Override

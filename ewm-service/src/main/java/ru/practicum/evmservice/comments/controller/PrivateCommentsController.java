@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.evmservice.comments.dto.CommentDto;
-import ru.practicum.evmservice.comments.dto.EventComments;
 import ru.practicum.evmservice.comments.service.CommentsService;
 
 import javax.validation.Valid;
@@ -17,17 +16,12 @@ public class PrivateCommentsController {
 
     private final CommentsService commentsService;
 
-    @GetMapping("/{userId}/{eventId}")
+    @GetMapping("/{userId}/event/{eventId}")
     public List<CommentDto> getAllUserCommentsByEvent(@PathVariable long userId, @PathVariable long eventId) {
         return commentsService.getAllUserCommentsByEvent(userId, eventId);
     }
 
-    @GetMapping("/{userId}/comments")
-    public List<EventComments> getAllUserCommentsByAllEvents(@PathVariable long userId) {
-        return commentsService.getAllUserCommentsByAllEvents(userId);
-    }
-
-    @PostMapping("/{userId}/comments")
+    @PostMapping("/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
     public CommentDto createCommentByUser(@PathVariable long userId, @Valid @RequestBody CommentDto commentDto) {
         return commentsService.createCommentByUser(userId, commentDto);
